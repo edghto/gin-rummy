@@ -1,0 +1,27 @@
+import { Component, computed, inject, Input } from '@angular/core';
+import { Dealer } from '../services/dealer.service';
+
+@Component({
+  selector: 'card-piles',
+  standalone: true,
+  imports: [],
+  templateUrl: './card-piles.html',
+  styleUrl: './card-piles.scss',
+})
+export class CardPiles {
+  private dealer = inject(Dealer);
+  protected card = this.dealer.lastDiscardedCard;
+  @Input() enabled: boolean = true;
+
+  pickFromStock(): void {
+    if (this.enabled) {
+      this.dealer.pickFromStock();
+    }
+  }
+
+  pickFromDiscarded(): void {
+    if (this.enabled) {
+      this.dealer.pickFromDiscarded();
+    }
+  }
+}

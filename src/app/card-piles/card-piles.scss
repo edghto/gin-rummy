@@ -1,0 +1,25 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    margin: auto !important;
+    width: min-content;
+}
+
+.meld {
+    display: flex;
+    flex-direction: row;
+}
+
+.empty {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+}
+
+#stock-pile {
+    background-image: url('../../../public/ai-generate-card.png');
+    background-size: 107%;
+    background-position: center;
+}

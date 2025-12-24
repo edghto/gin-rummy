@@ -1,1 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
+
+.black {
+    color: #000
+}
+
+.red {
+    color: #f00
+}
+
+.playing-table {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.gin-table {
+    margin: auto;
+    width: 1000px;
+    height: 750px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-image: url('../public/bg.gif');
+    background-repeat: repeat;
+    display: grid;
+    grid-template-rows: auto auto auto;
+}
+
+.card {
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 125px;
+    width: 82px;
+}

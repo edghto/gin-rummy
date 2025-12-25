@@ -10,14 +10,6 @@
     flex-direction: row;
 }
 
-.empty {
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-}
-
 #stock-pile {
     background-image: url('../../../public/ai-generate-card.png');
     background-size: 107%;

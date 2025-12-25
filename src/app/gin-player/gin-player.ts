@@ -25,6 +25,6 @@ export class GinPlayer {
         event.currentIndex,
       );
     }
-    this.player.orderCards();
+    this.player.sort();
   }
 }

@@ -1,11 +1,11 @@
 <div class="gin-player-hand" cdkDropListGroup>
-    @for (meld of player.melds; track meld) {
+    @for (meld of player.melds; track meld.id) {
     <div class="meld m-1" cdkDropList [cdkDropListData]="meld.cards" (cdkDropListDropped)="drop($event)">
         @if(meld.cards.length === 0){
         <div class="card empty">X</div>
         }
-        @for(card of meld.cards; track card) {
-        <div class="card {{card.color}}" (dblclick)="discard(card)" cdkDrag>{{card.face}}{{card.suite}}</div>
+        @for(card of meld.cards; track card.id) {
+        <div class="card {{card.color}}" (dblclick)="discard(card)" cdkDrag>{{card.id}}</div>
         }
     </div>
     }

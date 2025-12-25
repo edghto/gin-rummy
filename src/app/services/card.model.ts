@@ -3,6 +3,9 @@ import { Suites } from "./suites";
 export const DECK_FACES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 export class Card {
+    get id(): string {
+        return `${this.face}${this.suite}`;
+    }
     get color(): string {
         switch (this.suite) {
             case Suites.CLUBS:
@@ -37,8 +40,16 @@ export enum MeldType {
     EMPTY,
 }
 
+
 export class Meld {
+    private static _id = 1;
+    id: number = Meld._id++;
+
     cards: Card[] = [];
+
+    get empty(): boolean {
+        return this.type === MeldType.EMPTY;
+    }
 
     get type(): MeldType {
         const suites = new Set(...this.cards.map(c => c.suite))

@@ -31,4 +31,13 @@
     border-radius: 5px;
     height: 125px;
     width: 82px;
+
+    &.empty {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: #999;
+    }
 }

@@ -1,5 +1,5 @@
 import { Observable, Subject } from "rxjs";
-import { Card, DECK_FACES, Meld, MeldType, PickedCard } from "./card.model";
+import { Card, Meld, MeldType, PickedCard } from "./card.model";
 import { SUITES, Suites } from "./suites";
 
 export class PlayerController {
@@ -45,7 +45,7 @@ export class PlayerController {
         })
         melds.forEach(m => m.sort());
         SUITES.map(s => melds.get(s))
-            .filter(m => m?.type  !== MeldType.EMPTY)
+            .filter(m => m?.type !== MeldType.EMPTY)
             .forEach(m => this.melds.push(m as Meld));
     }
 
@@ -68,13 +68,24 @@ export class PlayerController {
         this.cardDiscarded$.next(card);
     }
 
-    orderCards() {
+    sort(): void {
+        const max = SUITES.length;
         this.melds.forEach(m => m.sort());
         this.melds.sort((a, b) => {
-            const aIdx = SUITES.findIndex(card => card === a.suite);
-            const bIdx = SUITES.findIndex(card => card === b.suite);
+            const aIdx = a.suite ? SUITES.findIndex(card => card === a.suite) : max;
+            const bIdx = b.suite ? SUITES.findIndex(card => card === b.suite) : max;
             return aIdx - bIdx
-        })
+        });
+
+        /*
+         * We need a placeholder at the end, to be able to take away a card from medl.
+         * We delete more than one placeholder. But It may not be any, so first we add one at the end. 
+         */
+        this.melds.push(new Meld());
+        const firstEmpty = this.melds.findIndex(m => m.empty);
+        if (firstEmpty < this.melds.length) {
+            this.melds.splice(firstEmpty + 1, this.melds.length);
+        }
     }
 
     knock(): void {
@@ -85,3 +96,4 @@ export class PlayerController {
 
     }
 }
+

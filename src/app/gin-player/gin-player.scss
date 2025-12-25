@@ -1,4 +1,4 @@
-:host {
+.gin-player-hand {
     display: flex;
     flex-direction: row;
     margin: auto !important;
@@ -8,4 +8,11 @@
 .meld {
     display: flex;
     flex-direction: row;
+
+    .card {
+        margin-left: -50px;
+        &:first-of-type {
+            margin-left: 0;
+        }
+    }
 }

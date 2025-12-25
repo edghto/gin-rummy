@@ -12,3 +12,5 @@ export enum SuitesColor {
     DIAMONDS = "red",
     CLUBS = "blac",
 }
+
+export const SUITES = [Suites.CLUBS, Suites.SPADES, Suites.DIAMONDS, Suites.HEARTS];

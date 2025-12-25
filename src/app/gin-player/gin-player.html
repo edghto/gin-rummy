@@ -1,15 +1,15 @@
-@for (meld of player.melds; track meld) {
-<div class="meld m-1">
-    @for(card of meld; track card) {
-    <div class="card {{card.color}}" (click)="discard(card)">{{card.face}}{{card.suite}}</div>
+<div class="gin-player-hand" cdkDropListGroup>
+    @for (meld of player.melds; track meld) {
+    <div class="meld m-1" cdkDropList [cdkDropListData]="meld.cards" (cdkDropListDropped)="drop($event)">
+        @if(meld.cards.length === 0){
+        <div class="card empty">X</div>
+        }
+        @for(card of meld.cards; track card) {
+        <div class="card {{card.color}}" (dblclick)="discard(card)" cdkDrag>{{card.face}}{{card.suite}}</div>
+        }
+    </div>
     }
 </div>
-}
-<!-- @for (card of player.deadwoods; track card) {
-<div class="meld m-1">
-    <div class="card {{card.color}}" (click)="discard(card)">{{card.face}}{{card.suite}}</div>
-</div>
-} -->
 <div class="actions">
     @if (player.canKnock){
     <a (click)="player.knock()" class="m-5">Knock</a>

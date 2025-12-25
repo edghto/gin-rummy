@@ -31,4 +31,62 @@ export class PickedCard {
     constructor(public card: Card, public discardable: boolean) { }
 }
 
-export type Meld = Card[];
+export enum MeldType {
+    SEQUENCE,
+    GROUP,
+    EMPTY,
+}
+
+export class Meld {
+    cards: Card[] = [];
+
+    get type(): MeldType {
+        const suites = new Set(...this.cards.map(c => c.suite))
+        if (suites.size === 1) {
+            return MeldType.SEQUENCE
+        } else if (suites.size > 1) {
+            return MeldType.GROUP;
+        }
+
+
+        return MeldType.EMPTY
+    }
+
+    get suite(): Suites | null {
+        return this.type === MeldType.SEQUENCE ? this.cards[0].suite : null;
+    }
+
+    get isDeadwood(): boolean {
+        if (this.cards.length <= 2) {
+            return true;
+        }
+        if (this.type === MeldType.SEQUENCE) {
+            const indicies = this.cards.map(c => DECK_FACES.findIndex(f => f === c.face));
+            for (let i = 0; i < indicies.length - 1; i++) {
+                if (indicies[i] !== indicies[i + 1]) {
+                    return false;
+                }
+            }
+        }
+        else if (this.type === MeldType.GROUP) {
+            const faces = new Set(...this.cards.map(c => c.face));
+            return faces.size === 1;
+        }
+
+        return true;
+    }
+
+
+    addCard(card: Card) {
+        this.cards.push(card);
+        this.sort();
+    }
+
+    sort(): void {
+        this.cards.sort((a, b) => {
+            const aIdx = DECK_FACES.findIndex(card => card === a.face);
+            const bIdx = DECK_FACES.findIndex(card => card === b.face);
+            return aIdx - bIdx
+        })
+    }
+}

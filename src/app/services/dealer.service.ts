@@ -1,6 +1,6 @@
 import { NEVER, Observable, Subject } from "rxjs";
 import { Card, DECK_FACES, PickedCard } from "./card.model";
-import { Suites } from "./suites";
+import { SUITES, Suites } from "./suites";
 import { signal, Signal } from "@angular/core";
 
 export class Dealer {
@@ -23,7 +23,7 @@ export class Dealer {
     }
 
     constructor() {
-        this.stockPile = shuffle(DECK_FACES.flatMap(face => [Suites.CLUBS, Suites.SPADES, Suites.DIAMONDS, Suites.HEARTS].map(suite => new Card(face, suite))));
+        this.stockPile = shuffle(DECK_FACES.flatMap(face => SUITES.map(suite => new Card(face, suite))));
         const player: Card[] = [];
         const opponent: Card[] = [];
 

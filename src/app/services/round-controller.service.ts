@@ -50,10 +50,10 @@ export class RoundController implements OnDestroy {
 
     onDragStarted(card: Card): void {
         card.highlighted = false;
-        this.currentPlayer.melds.forEach(m => m.highlighted = true);
+        this.currentPlayer.hints(card).forEach(m => m.highlighted = true);
     }
     
-    onDragEnded(card: Card): void {
+    onDragEnded(_card: Card): void {
         this.currentPlayer.melds.forEach(m => m.highlighted = false);
     }
 

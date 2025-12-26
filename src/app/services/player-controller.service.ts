@@ -1,8 +1,10 @@
 import { Observable, Subject } from "rxjs";
 import { Card, Meld, MeldType, PickedCard } from "./card.model";
 import { SUITES, Suites } from "./suites";
+import { HintService } from "./hint.service";
 
 export class PlayerController {
+    private hintService = new HintService(this);
     melds: Meld[] = [];
 
     private cardDiscarded$ = new Subject<Card>();
@@ -48,6 +50,12 @@ export class PlayerController {
         SUITES.map(s => melds.get(s))
             .filter(m => m?.type !== MeldType.EMPTY)
             .forEach(m => this.melds.push(m as Meld));
+
+        this.hintService = new HintService(this);
+    }
+
+    hints(card: Card): Meld[] {
+        return this.hintService.hintMeld(card);
     }
 
     addCard(pickedCard: PickedCard): void {

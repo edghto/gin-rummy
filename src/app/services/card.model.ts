@@ -2,9 +2,17 @@ import { Suites } from "./suites";
 
 export const DECK_FACES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
+export function getCardIdx(card: Card): number {
+    const idx = DECK_FACES.findIndex(c => c === card.face);
+    if (idx === -1) {
+        throw new Error(`Card out of range ${card.id}`);
+    }
+    return idx;
+}
+
 export class Card {
     highlighted: boolean = false;
-    
+
     get id(): string {
         return `${this.face}${this.suite}`;
     }
@@ -57,12 +65,11 @@ export class Meld {
 
     get type(): MeldType {
         const suites = new Set(...this.cards.map(c => c.suite))
-        if (suites.size === 1) {
+        if (suites.size === 1 && this.cards.length > 1) {
             return MeldType.SEQUENCE
         } else if (suites.size > 1) {
             return MeldType.GROUP;
         }
-
 
         return MeldType.EMPTY
     }
@@ -100,8 +107,8 @@ export class Meld {
 
     sort(): void {
         this.cards.sort((a, b) => {
-            const aIdx = DECK_FACES.findIndex(card => card === a.face);
-            const bIdx = DECK_FACES.findIndex(card => card === b.face);
+            const aIdx = getCardIdx(a);
+            const bIdx = getCardIdx(b);
             return aIdx - bIdx
         })
     }

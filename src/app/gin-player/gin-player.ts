@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PlayerController } from '../services/player-controller.service';
-import { Card } from '../services/card.model';
+import { Card, Meld } from '../services/card.model';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragStart, CdkDropList, CdkDropListGroup, transferArrayItem, } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -39,10 +39,14 @@ export class GinPlayer {
     this.dragging = true;
     this.cd.detectChanges();
   }
-  
+
   onDragEnded($event: CdkDragDrop<Card>): void {
     this.dragEnded.next($event.item.data);
     this.dragging = false;
     this.cd.detectChanges();
+  }
+
+  allowDrop(meld: Meld): (drag: CdkDrag, drop: CdkDropList) => boolean {
+    return (_drag: CdkDrag, _drop: CdkDropList) => meld.highlighted || meld.empty;
   }
 }

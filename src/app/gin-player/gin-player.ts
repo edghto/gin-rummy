@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PlayerController } from '../services/player-controller.service';
 import { Card } from '../services/card.model';
-import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup,   transferArrayItem, } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragStart, CdkDropList, CdkDropListGroup, transferArrayItem, } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'gin-player',
@@ -12,11 +12,17 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup,   transferArrayIte
 })
 export class GinPlayer {
   @Input({ required: true }) player!: PlayerController;
+  @Output() dragStarted = new EventEmitter<Card>()
+  @Output() dragEnded = new EventEmitter<Card>()
+  protected dragging: boolean = false;
+
+  private cd = inject(ChangeDetectorRef);
 
   discard(card: Card): void {
     this.player.discard(card);
   }
-  drop(event: CdkDragDrop<Card[]>) {
+
+  drop(event: CdkDragDrop<Card[]>): void {
     if (event.previousContainer !== event.container) {
       transferArrayItem(
         event.previousContainer.data,
@@ -26,5 +32,17 @@ export class GinPlayer {
       );
     }
     this.player.sort();
+  }
+
+  onDragStarted($event: CdkDragStart<Card>): void {
+    this.dragStarted.next($event.source.data);
+    this.dragging = true;
+    this.cd.detectChanges();
+  }
+  
+  onDragEnded($event: CdkDragDrop<Card>): void {
+    this.dragEnded.next($event.item.data);
+    this.dragging = false;
+    this.cd.detectChanges();
   }
 }

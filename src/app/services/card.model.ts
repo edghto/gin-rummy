@@ -3,6 +3,8 @@ import { Suites } from "./suites";
 export const DECK_FACES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 export class Card {
+    highlighted: boolean = false;
+    
     get id(): string {
         return `${this.face}${this.suite}`;
     }
@@ -44,6 +46,8 @@ export enum MeldType {
 export class Meld {
     private static _id = 1;
     id: number = Meld._id++;
+
+    highlighted: boolean = false;
 
     cards: Card[] = [];
 
@@ -89,6 +93,7 @@ export class Meld {
 
 
     addCard(card: Card) {
+        card.highlighted = true;
         this.cards.push(card);
         this.sort();
     }

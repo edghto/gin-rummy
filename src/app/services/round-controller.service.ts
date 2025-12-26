@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { PlayerController } from "./player-controller.service";
 import { Card, PickedCard } from "./card.model";
-import { filter, merge, Observable, Subscription } from "rxjs";
+import { filter, merge, MonoTypeOperatorFunction, Observable, Subscription } from "rxjs";
 import { Dealer } from "./dealer.service";
 
 enum Phase {
@@ -33,7 +33,7 @@ export class RoundController implements OnDestroy {
         this.dealer = dealer;
 
         this.subscriptions.add(
-            merge(...players.map(this.toPausable()))
+            merge(...players.map(this.toPausable(PlayerController.prototype.cardDiscarded)))
                 .pipe(filter(_any => this.phase === Phase.DISCARD))
                 .subscribe(this.onCardDiscarded.bind(this))
         );
@@ -48,9 +48,18 @@ export class RoundController implements OnDestroy {
         this.phase = Phase.DRAW;
     }
 
-    private toPausable(): (p: PlayerController) => Observable<Card> {
+    onDragStarted(card: Card): void {
+        card.highlighted = false;
+        this.currentPlayer.melds.forEach(m => m.highlighted = true);
+    }
+    
+    onDragEnded(card: Card): void {
+        this.currentPlayer.melds.forEach(m => m.highlighted = false);
+    }
+
+    private toPausable<T>(func: () => Observable<T>): (p: PlayerController) => Observable<T> {
         return (p: PlayerController) => {
-            return p.cardDiscarded().pipe(filter(_any => p.name == this.currentPlayer.name))
+            return func.call(p).pipe(filter(_any => p.name == this.currentPlayer.name))
         };
     }
 

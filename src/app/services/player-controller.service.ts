@@ -41,6 +41,7 @@ export class PlayerController {
             const meld = melds.get(card.suite);
             if (meld) {
                 meld.addCard(card)
+                card.highlighted = false;
             }
         })
         melds.forEach(m => m.sort());

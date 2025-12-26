@@ -1,8 +1,8 @@
 <div class="meld m-1">
-    <div id="stock-pile" class="card" (click)="pickFromStock()"></div>
+    <div id="stock-pile" class="card" [class.highlighted]="enabled" (click)="pickFromStock()"></div>
 </div>
 <div class="meld m-1">
-    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" (click)="pickFromDiscarded()">
+    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled" (click)="pickFromDiscarded()">
         {{card()?.face ?? 'X'}}{{card()?.suite}}
     </div>
 </div>

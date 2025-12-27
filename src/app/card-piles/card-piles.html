@@ -2,7 +2,11 @@
     <div id="stock-pile" class="card" [class.highlighted]="enabled" (click)="pickFromStock()"></div>
 </div>
 <div class="meld m-1">
-    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled" (click)="pickFromDiscarded()">
+    @if(ended){
+    <div id="end-card" class="card"></div>
+    }
+    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled"
+        (click)="pickFromDiscarded()">
         {{card()?.face ?? 'X'}}{{card()?.suite}}
     </div>
 </div>

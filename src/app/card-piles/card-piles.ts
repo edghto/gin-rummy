@@ -12,6 +12,7 @@ export class CardPiles {
   private dealer = inject(Dealer);
   protected card = this.dealer.lastDiscardedCard;
   @Input() enabled: boolean = true;
+  @Input() ended = false;
 
   pickFromStock(): void {
     if (this.enabled) {

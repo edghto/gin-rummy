@@ -31,8 +31,10 @@ export class GinPlayer {
         event.currentIndex,
       );
     }
-    this.player.sort();
+
+    this.player.melds().forEach(m => m.cards.update(c => [...c]));
     this.cd.detectChanges();
+    this.player.sort();
   }
 
   onDragStarted($event: CdkDragStart<Card>): void {
@@ -48,6 +50,6 @@ export class GinPlayer {
   }
 
   allowDrop(meld: Meld): (drag: CdkDrag, drop: CdkDropList) => boolean {
-    return (_drag: CdkDrag, _drop: CdkDropList) => meld.highlighted || meld.empty;
+    return (_drag: CdkDrag, _drop: CdkDropList) => meld.highlighted || meld.isEmpty();
   }
 }

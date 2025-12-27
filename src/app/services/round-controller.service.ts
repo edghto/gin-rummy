@@ -4,20 +4,24 @@ import { Card, PickedCard } from "./card.model";
 import { filter, merge, MonoTypeOperatorFunction, Observable, Subscription } from "rxjs";
 import { Dealer } from "./dealer.service";
 
-enum Phase {
+export enum Phase {
     DRAW,
     DISCARD,
+    END,
 }
 
 @Injectable()
 export class RoundController implements OnDestroy {
-    private phase: Phase = Phase.DRAW;
+    private _phase: Phase = Phase.DRAW;
     private players: PlayerController[] = [];
     private dealer!: Dealer;
     private subscriptions = new Subscription();
 
-    get inDrawPhase(): boolean {
-        return this.phase === Phase.DRAW;
+    get phase(): Phase {
+        return this._phase;
+    }
+    set phase(value: Phase) {
+        this._phase = value;
     }
 
     private get currentPlayer(): PlayerController {
@@ -52,9 +56,9 @@ export class RoundController implements OnDestroy {
         card.highlighted = false;
         this.currentPlayer.hints(card).forEach(m => m.highlighted = true);
     }
-    
+
     onDragEnded(_card: Card): void {
-        this.currentPlayer.melds.forEach(m => m.highlighted = false);
+        this.currentPlayer.melds().forEach(m => m.highlighted = false);
     }
 
     private toPausable<T>(func: () => Observable<T>): (p: PlayerController) => Observable<T> {
@@ -65,9 +69,14 @@ export class RoundController implements OnDestroy {
 
     private pickedCard: PickedCard | undefined;
     private onCardPicked(pickedCard: PickedCard): void {
-        this.phase = Phase.DISCARD;
-        this.pickedCard = pickedCard;
-        this.currentPlayer.addCard(pickedCard)
+        if (pickedCard.card) {
+            this.phase = Phase.DISCARD;
+            this.pickedCard = pickedCard;
+            this.currentPlayer.addCard(pickedCard)
+        }
+        else {
+            this.endGame(true);
+        }
     }
 
     private onCardDiscarded(card: Card): void {
@@ -76,16 +85,27 @@ export class RoundController implements OnDestroy {
         }
         this.pickedCard = undefined;
         this.currentPlayer.remove(card)
-        this.dealer.discard(card);
-        this.endRound();
+
+        const last = this.currentPlayer.canDeclare();
+        if (last) {
+            this.endGame(false);
+        }
+        else {
+            this.endRound(card);
+        }
     }
 
-    private endRound(): void {
+    private endRound(card: Card): void {
+        this.dealer.discard(card);
         const tmp = this.players.shift() as PlayerController;
         this.players.push(tmp);
-
         this.phase = Phase.DRAW;
         this.assertPlayers();
+    }
+
+    private endGame(draw: boolean): void {
+        this.phase = Phase.END;
+        this.players.splice(0);
     }
 
     private stockEnded(): void {
@@ -93,9 +113,9 @@ export class RoundController implements OnDestroy {
     }
 
     private assertPlayers(): void {
-        const invalid = this.players.filter(p => p.totalCards != 10);
+        const invalid = this.players.filter(p => p.totalCards() != 10);
         if (invalid.length != 0) {
-            throw new Error(`Too many cards ${invalid.map(p => p.name)}`);
+            throw new Error(`Worng cards count ${invalid.map(p => p.name)}`);
         }
     }
 }

@@ -18,4 +18,8 @@
             margin-left: 0;
         }
     }
+
+    &.declared {
+        border-bottom: 3px dashed yellow;
+    }
 }

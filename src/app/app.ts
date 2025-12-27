@@ -2,9 +2,10 @@ import { Component, inject, OnInit, Signal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GinPlayer } from './gin-player/gin-player';
 import { CardPiles } from './card-piles/card-piles';
-import { RoundController } from './services/round-controller.service';
+import { Phase, RoundController } from './services/round-controller.service';
 import { Dealer } from './services/dealer.service';
 import { PlayerController } from './services/player-controller.service';
+import { parseHostBindings } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -21,9 +22,13 @@ export class App implements OnInit {
   protected opponent!: PlayerController;
 
   protected get pilesEnabled(): boolean {
-    return this.roundController.inDrawPhase;
+    return this.roundController.phase === Phase.DRAW;
   }
 
+  protected get ended(): boolean {
+    return this.roundController.phase === Phase.END;
+  }
+  
   ngOnInit(): void {
     this.player = new PlayerController('player', this.dealer.player());
     this.opponent = new PlayerController('opponent', this.dealer.opponent());

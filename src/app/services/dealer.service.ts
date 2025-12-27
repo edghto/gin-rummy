@@ -35,7 +35,7 @@ export class Dealer {
         this._player.set(player);
         this._opponent.set(opponent);
 
-        this.discard(array_pop(this.stockPile))
+        this.discard(array_pop(this.stockPile));
     }
 
     private cardPicked$ = new Subject<PickedCard>();

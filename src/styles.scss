@@ -1,5 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 
+body {
+    background: #333;
+    color: white;
+}
+
+a {
+    color: white;
+    &:visited {
+        color: white;
+    }
+}
+
 .black {
     color: #000
 }

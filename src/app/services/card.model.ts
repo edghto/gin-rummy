@@ -45,9 +45,10 @@ export class PickedCard {
 }
 
 export enum MeldType {
-    SEQUENCE,
-    GROUP,
-    EMPTY,
+    SEQUENCE = 0, 
+    GROUP = 10,
+    MIX = 20,
+    EMPTY = 30,
 }
 
 
@@ -64,14 +65,20 @@ export class Meld {
     }
 
     get type(): MeldType {
-        const suites = new Set(...this.cards.map(c => c.suite))
-        if (suites.size === 1 && this.cards.length > 1) {
+        if (this.cards.length === 0) {
+            return MeldType.EMPTY
+        }
+
+        const suites = new Set(this.cards.map(c => c.suite))
+        const faces = new Set(this.cards.map(c => c.face))
+        if (suites.size === 1 && faces.size > 1) {
             return MeldType.SEQUENCE
-        } else if (suites.size > 1) {
+        }
+        if (suites.size > 1 && faces.size === 1) {
             return MeldType.GROUP;
         }
 
-        return MeldType.EMPTY
+        return MeldType.MIX;
     }
 
     get suite(): Suites | null {
@@ -79,23 +86,20 @@ export class Meld {
     }
 
     get isDeadwood(): boolean {
-        if (this.cards.length <= 2) {
+        const type = this.type;
+        if (this.cards.length <= 2 || type === MeldType.MIX) {
             return true;
         }
-        if (this.type === MeldType.SEQUENCE) {
+
+        if (type === MeldType.SEQUENCE) {
             const indicies = this.cards.map(c => DECK_FACES.findIndex(f => f === c.face));
             for (let i = 0; i < indicies.length - 1; i++) {
                 if (indicies[i] !== indicies[i + 1]) {
-                    return false;
+                    return true;
                 }
             }
         }
-        else if (this.type === MeldType.GROUP) {
-            const faces = new Set(...this.cards.map(c => c.face));
-            return faces.size === 1;
-        }
-
-        return true;
+        return this.type === MeldType.GROUP;
     }
 
 
@@ -111,5 +115,10 @@ export class Meld {
             const bIdx = getCardIdx(b);
             return aIdx - bIdx
         })
+    }
+
+    toString(): any {
+        const type = MeldType[this.type];
+        return `${this.id}-${type}: ${this.cards.map(c => c.id).join(',')}`;
     }
 }

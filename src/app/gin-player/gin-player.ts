@@ -32,6 +32,7 @@ export class GinPlayer {
       );
     }
     this.player.sort();
+    this.cd.detectChanges();
   }
 
   onDragStarted($event: CdkDragStart<Card>): void {

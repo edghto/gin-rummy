@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { PlayerController } from "./player-controller.service";
+import { PlayerController } from "./player-controller/player-controller.service";
 import { Card, PickedCard } from "./card.model";
 import { filter, merge, MonoTypeOperatorFunction, Observable, Subscription } from "rxjs";
 import { Dealer } from "./dealer.service";
@@ -28,7 +28,7 @@ export class RoundController implements OnDestroy {
         return this.players[0];
     }
 
-    public ngOnDestroy(): void {
+    ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
     }
 
@@ -37,7 +37,7 @@ export class RoundController implements OnDestroy {
         this.dealer = dealer;
 
         this.subscriptions.add(
-            merge(...players.map(this.toPausable(PlayerController.prototype.cardDiscarded)))
+            merge(...players.map(this.toPausable()))
                 .pipe(filter(_any => this.phase === Phase.DISCARD))
                 .subscribe(this.onCardDiscarded.bind(this))
         );
@@ -61,9 +61,9 @@ export class RoundController implements OnDestroy {
         this.currentPlayer.melds().forEach(m => m.highlighted = false);
     }
 
-    private toPausable<T>(func: () => Observable<T>): (p: PlayerController) => Observable<T> {
+    private toPausable(): (p: PlayerController) => Observable<Card> {
         return (p: PlayerController) => {
-            return func.call(p).pipe(filter(_any => p.name == this.currentPlayer.name))
+            return p.cardDiscarded().pipe(filter(_any => p.name == this.currentPlayer.name))
         };
     }
 
@@ -100,6 +100,7 @@ export class RoundController implements OnDestroy {
         const tmp = this.players.shift() as PlayerController;
         this.players.push(tmp);
         this.phase = Phase.DRAW;
+        this.currentPlayer.roundStart();
         this.assertPlayers();
     }
 

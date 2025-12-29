@@ -2,8 +2,9 @@ import { NEVER, Observable, Subject } from "rxjs";
 import { Card, DECK_FACES, PickedCard } from "./card.model";
 import { SUITES, Suites } from "./suites";
 import { signal, Signal } from "@angular/core";
+import { DiscadedCardsService } from "./discarded-card.service";
 
-export class Dealer {
+export class Dealer implements DiscadedCardsService {
     private stockPile: Card[] = [];
     private discardedPile: Card[] = [];
     private _lastDiscardedCard = signal<Card | null>(null);
@@ -36,6 +37,10 @@ export class Dealer {
         this._opponent.set(opponent);
 
         this.discard(array_pop(this.stockPile));
+    }
+
+    history(): Card[] {
+        return [...this.discardedPile];
     }
 
     private cardPicked$ = new Subject<PickedCard>();

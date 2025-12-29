@@ -1,23 +1,9 @@
 import { Observable, Subject } from "rxjs";
-import { Card, Meld, MeldType, PickedCard } from "./card.model";
-import { SUITES, Suites } from "./suites";
-import { HintService } from "./hint.service";
+import { Card, Meld, PickedCard } from "../card.model";
+import { SUITES, Suites } from "../suites";
 import { computed, Signal, signal } from "@angular/core";
 
-export class PlayerController {
-    private hintService = new HintService(this);
-    melds = signal<Meld[]>([]);
-
-    private cardDiscarded$ = new Subject<Card>();
-    cardDiscarded(): Observable<Card> {
-        return this.cardDiscarded$.asObservable();
-    }
-
-    canDeclare: Signal<boolean> = computed(() => this.deadwoods().length == 0)
-    deadWoodPoints: Signal<number> = computed(() => this.deadwoods().reduce((acc, m) => acc + m.points(), 0))
-    deadwoods: Signal<Meld[]> = computed(() => this.melds().filter(m => m.isDeadwood()))
-    totalCards: Signal<number> = computed(() => this.melds().reduce((acc, meld) => acc + meld.cards().length, 0))
-
+export abstract class PlayerController {
     constructor(public name: string, hand: Card[]) {
         const melds = new Map<Suites, Card[]>([
             [Suites.CLUBS, []],
@@ -37,26 +23,29 @@ export class PlayerController {
                 .map(m => new Meld(m as Card[]))
         );
         this.sort();
-        this.hintService = new HintService(this);
     }
 
-    hints(card: Card): Meld[] {
-        return this.hintService.hintMeld(card);
+    melds = signal<Meld[]>([]);
+
+    protected cardDiscarded$ = new Subject<Card>();
+    cardDiscarded(): Observable<Card> {
+        return this.cardDiscarded$.asObservable();
     }
 
-    addCard(pickedCard: PickedCard): void {
-        this.melds.update(melds => {
-            let meld = melds.find(m => m.type() === MeldType.EMPTY);
-            if (!meld) {
-                meld = new Meld([]);
-                melds = [...melds, meld];
-            }
-            meld.addCard(pickedCard.card)
-            return melds;
-        })
+    canDeclare: Signal<boolean> = computed(() => this.deadwoods().length == 0)
+    deadWoodPoints: Signal<number> = computed(() => this.deadwoods().reduce((acc, m) => acc + m.points(), 0))
+    deadwoods: Signal<Meld[]> = computed(() => this.melds().filter(m => m.isDeadwood()))
+    totalCards: Signal<number> = computed(() => this.melds().reduce((acc, meld) => acc + meld.cards().length, 0))
+
+    hints(_card: Card): Meld[] {
+        return this.melds();
     }
 
-    remove(card: Card) {
+    roundStart(): void { }
+
+    abstract addCard(pickedCard: PickedCard): void;
+    
+    remove(card: Card): void {
         this.melds().filter(meld => meld.remove(card));
     }
 
@@ -92,13 +81,4 @@ export class PlayerController {
             return [...melds];
         });
     }
-
-    knock(): void {
-
-    }
-
-    declare(): void {
-
-    }
 }
-

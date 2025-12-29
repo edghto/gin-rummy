@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { PlayerController } from '../services/player-controller.service';
+import { PlayerController } from '../services/player-controller/player-controller.service';
 import { Card, Meld } from '../services/card.model';
 import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragStart, CdkDropList, CdkDropListGroup, transferArrayItem, } from '@angular/cdk/drag-drop';
 

@@ -1,5 +1,5 @@
 import { Card, getCardIdx, Meld, MeldType } from "./card.model";
-import { PlayerController } from "./player-controller.service";
+import { PlayerController } from "./player-controller/player-controller.service";
 
 export class HintService {
     constructor(private playerController: PlayerController) { }

@@ -1,9 +1,7 @@
-import { inject, Injectable, OnDestroy, signal, Signal } from "@angular/core";
-import { from, map, merge, Observable, of, ReplaySubject, Subject, Subscription, take, tap } from "rxjs";
+import { map, Observable, of, Subscription, tap } from "rxjs";
 import { Meld, Card, PickedCard } from "../card.model";
 import { PlayerController } from "./player-controller.service";
 import { HttpClient } from "@angular/common/http";
-import { DISCADED_CARDS_SERVICE_TOKEN } from "../discarded-card.service";
 import { Request, Response, Card as HttpCard, Meld as HttpMeld } from "./ai.model";
 import { Dealer } from "../dealer.service";
 
@@ -19,16 +17,15 @@ class RequestParams {
     }
 }
 
-const AI_ENDPOINT = '/';
+const AI_ENDPOINT = 'api/player/turn';
 
 export class AIPlayerController extends PlayerController {
 
     private response: Response | null = null;
 
-    // FIXME: Unsubscribe somehow, somewhere.
     private subscription = new Subscription();
 
-    public ngOnDestroy(): void {
+    unsubscribe(): void {
         this.subscription.unsubscribe();
     }
 
@@ -50,8 +47,13 @@ export class AIPlayerController extends PlayerController {
 
         if (newCard) {
             this.subscription.add(this.query(request.toRequest(newCard)).subscribe(response => {
-                this.response = response;
-                this.dealer.pickFromDiscarded();
+                if (response.discardedCard == newCard) {
+                    this.response = response;
+                    this.dealer.pickFromDiscarded();
+                }
+                else {
+                    this.dealer.pickFromStock();
+                }
             }));
         } else {
             this.dealer.pickFromStock();

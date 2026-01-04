@@ -44,9 +44,12 @@ export abstract class PlayerController {
     roundStart(): void { }
 
     abstract addCard(pickedCard: PickedCard): void;
-    
+
     remove(card: Card): void {
-        this.melds().filter(meld => meld.remove(card));
+        this.melds.update(melds => {
+            melds.forEach(meld => meld.remove(card));
+            return [...melds];
+        });
     }
 
     discard(card: Card): void {

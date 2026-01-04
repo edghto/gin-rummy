@@ -31,7 +31,7 @@ export function getColor(card: Card): string {
     return 'red'
 }
 
-export class Card {
+export class    Card {
     highlighted: boolean = false;
     id: string;
     points: number;
@@ -124,7 +124,7 @@ export class Meld {
     }
 
     remove(card: Card): boolean {
-        const idx = this.cards().findIndex(c => c == card);
+        const idx = this.cards().findIndex(c => c.id === card.id);
         if (idx != -1) {
             this.cards().splice(idx, 1);
             this.cards.update(cards => [...cards])

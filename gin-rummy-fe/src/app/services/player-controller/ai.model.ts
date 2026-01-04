@@ -1,4 +1,4 @@
-import { Suites } from "../suites"
+import { fromString, Suites } from "../suites"
 
 export class Card {
     constructor(
@@ -8,7 +8,7 @@ export class Card {
 
     static fromPayload(payload: any): Card {
         return new Card(
-            Suites[payload.suite as keyof typeof Suites],
+            fromString(payload.suite) as Suites,
             payload.face,
         )
     }

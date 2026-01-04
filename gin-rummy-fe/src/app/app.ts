@@ -1,14 +1,14 @@
-import { Component, inject, OnInit, Signal, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GinPlayer } from './gin-player/gin-player';
 import { CardPiles } from './card-piles/card-piles';
 import { Phase, RoundController } from './services/round-controller.service';
 import { Dealer } from './services/dealer.service';
-import { PlayerController } from './services/player-controller/player-controller.service';
 import { UserPlayerController } from './services/player-controller/user.service';
 import { AIPlayerController } from './services/player-controller/ai.service';
 import { HttpClient } from '@angular/common/http';
 import { DISCADED_CARDS_SERVICE_TOKEN } from './services/discarded-card.service';
+import { fromString, Suites } from './services/suites';
 
 @Component({
   selector: 'app-root',
@@ -22,13 +22,13 @@ import { DISCADED_CARDS_SERVICE_TOKEN } from './services/discarded-card.service'
     { provide: DISCADED_CARDS_SERVICE_TOKEN, useExisting: Dealer }
   ]
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
   protected dealer = inject(Dealer);
   protected roundController = inject(RoundController);
   private httpClient = inject(HttpClient);
 
-  protected player!: PlayerController;
-  protected opponent!: PlayerController;
+  protected player!: UserPlayerController;
+  protected opponent!: AIPlayerController;
 
   protected get pilesEnabled(): boolean {
     return this.roundController.phase === Phase.DRAW;
@@ -38,10 +38,13 @@ export class App implements OnInit {
     return this.roundController.phase === Phase.END;
   }
 
-
   ngOnInit(): void {
     this.player = new UserPlayerController(this.dealer.player());
     this.opponent = new AIPlayerController(this.dealer.opponent(), this.httpClient, this.dealer);
     this.roundController.init(this.dealer, [this.player, this.opponent]);
+  }
+
+  ngOnDestroy(): void {
+    this.opponent.unsubscribe();
   }
 }

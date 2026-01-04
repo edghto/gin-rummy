@@ -27,7 +27,7 @@ type PlayerResponse struct {
 	NewCard Card `json:"newCard"`
 }
 
-func toJSON(obj *PlayerResponse) string {
+func toJSON[T any](obj *T) string {
 	data, err := json.Marshal(obj)
 	if err != nil {
 		log.Printf("failed to serialzie response: %s", err.Error())
@@ -37,6 +37,17 @@ func toJSON(obj *PlayerResponse) string {
 	return string(data)
 }
 
+func fromJSON[T any](data []byte) (*T, error) {
+	var obj T
+	err := json.Unmarshal(data, &obj)
+	if err != nil {
+		fmt.Println("Error decoding JSON:", err)
+		return nil, err
+	}
+
+	return &obj, nil
+}
+
 func fromIOReader(reader io.ReadCloser) (*PlayerRequest, error) {
 	body, err := io.ReadAll(reader)
 	if err != nil {
@@ -44,14 +55,13 @@ func fromIOReader(reader io.ReadCloser) (*PlayerRequest, error) {
 	}
 	defer reader.Close()
 
-	var request PlayerRequest
-	errUnmarshal := json.Unmarshal(body, &request)
-	if errUnmarshal != nil {
+	request, err := fromJSON[PlayerRequest](body)
+	if err != nil {
 		fmt.Println("Error decoding JSON:", err)
-		return nil, errUnmarshal
+		return nil, err
 	}
 
-	return &request, nil
+	return request, nil
 }
 
 // Meld representation

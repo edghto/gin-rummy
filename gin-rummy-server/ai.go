@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"log"
+	"strings"
 	"text/template"
 
 	"google.golang.org/genai"
@@ -19,14 +20,13 @@ func askAI(ctx context.Context, playerRequest *PlayerRequest) (*PlayerResponse, 
 	if err != nil {
 		return nil, err
 	}
+	log.Println("ai response: '" + response + "'")
 
 	playerReposne, err := fromJSON[PlayerResponse]([]byte(response))
 	return playerReposne, nil
 }
 
 func sendRequest(ctx context.Context, prompt string) (string, error) {
-	log.Println("sending prompt: ")
-	log.Println(prompt)
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		HTTPOptions: genai.HTTPOptions{APIVersion: "v1"},
 	})
@@ -36,16 +36,16 @@ func sendRequest(ctx context.Context, prompt string) (string, error) {
 
 	resp, err := client.Models.GenerateContent(
 		ctx,
-		"gemini-2.5-flash",
+		"gemini-2.5-flash-lite",
 		genai.Text(prompt),
 		nil,
 	)
 	if err != nil {
 		return "", err
 	}
-	log.Println(resp)
 
-	return resp.Text(), nil
+	text := strings.TrimSuffix(strings.TrimPrefix(resp.Text(), "```json"), "```")
+	return text, nil
 }
 
 func getPrompt(request *PlayerRequest) (string, error) {
@@ -70,6 +70,8 @@ func getPrompt(request *PlayerRequest) (string, error) {
 	}{
 		Data: toJSON(&input),
 	}
+
+	log.Println("ai request: '" + data.Data + "'")
 
 	// var tmplFile = "prompt.tmpl"
 	var tmplFile = "/usr/etc/gin-rummy-prompt.tmpl"

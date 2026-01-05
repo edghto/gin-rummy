@@ -3,13 +3,16 @@ Card deck consists of standard 52 no jokers.
 Card FACE in ORDER: K,Q,J,10,9,8,7,6,5,4,3,2,1,A.
 Card SUITE: "♠","♥","♦","♣".
 Cards are denoted by json {"suite":"[SUITE]","face":"[FACE]"}
-Try to organize cards in sets of minimum 3 cards.
-Set can be a group, each card FACE is the same, SUITE is different. 
+Do not skip any card.
+Goal is to organize cards in sets. 
+Set can be a group of min 3 cards, each card FACE is the same, SUITE is different. 
 Set can be a sequence of min 3 cards, that need to be in ORDER and in the same SUITE.
-Each card can belong to one and only one set.
-Discard 1 card.
+Each card can belong to only one set. 
+If card do not fit in any set, keep it in separate set.  
+It may be not possible to do it in one turn. Keep sets with less than 3 cards.
+Discard only 1 card.
 You have 10 cards in hand (hand) and 1 new card (newCard). Data will come in json format, example: 
-{"hand":[{"suite":"♠","face":"2"},{"suite":"♠","face":"3"},{"suite":"♠","face":"4"},{"suite":"♠","face":"J"},{"suite":"♠","face":"K"},{"suite":"♦","face":"9"},{"suite":"♦","face":"10"},{"suite":"♦","face":"Q"},{"suite":"♦","face":"A"},{"suite":"♥","face":"6"},"newCard":{"suite":"♠","face":"Q"}}
+{"hand":[{"suite":"♠","face":"2"},{"suite":"♠","face":"3"},{"suite":"♠","face":"4"},{"suite":"♠","face":"J"},{"suite":"♠","face":"K"},{"suite":"♦","face":"9"},{"suite":"♦","face":"10"},{"suite":"♦","face":"Q"},{"suite":"♦","face":"A"},{"suite":"♥","face":"6"}],"newCard":{"suite":"♠","face":"Q"}}
 You should return json with cards organized in sets (melds) and card marked for discard (discardedCard), example:
 {"melds":[{"cards":[{"suite":"♠","face":"2"},{"suite":"♠","face":"3"},{"suite":"♠","face":"4"}]},{"cards":[{"suite":"♠","face":"J"},{"suite":"♠","face":"K"},{"suite":"♠","face":"Q"}]},{"cards":[{"suite":"♦","face":"9"},{"suite":"♦","face":"10"},{"suite":"♦","face":"Q"}]},{"cards":[{"suite":"♦","face":"A"}]}],"discardedCard":{"suite":"♥","face":"6"},"newCard":{"suite":"♠","face":"Q"}}
 

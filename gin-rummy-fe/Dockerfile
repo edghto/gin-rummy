@@ -14,4 +14,5 @@ RUN ng build --configuration=production
 
 FROM nginx:1.29.4-alpine-slim
 
-COPY --from=build app/dist/gin-rummy-fe /usr/share/nginx/html
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build app/dist/gin-rummy-fe/browser /usr/share/nginx/html

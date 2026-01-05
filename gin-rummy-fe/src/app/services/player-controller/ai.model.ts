@@ -12,6 +12,10 @@ export class Card {
             payload.face,
         )
     }
+
+    get id(): string {
+        return `${this.face}${this.suite}`;
+    }
 }
 
 export class Meld {

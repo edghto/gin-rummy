@@ -77,13 +77,7 @@ export class AIPlayerController extends PlayerController {
     }
 
     private uppdateMelds(): (value: Response) => void {
-        return response => {
-            const melds = [
-                ...response.melds.map(fromHttpMeld),
-                new Meld([fromHttpCard(response.discardedCard)]),
-            ];
-            this.melds.set(melds);
-        }
+        return response => this.melds.set(response.melds.map(fromHttpMeld));
     }
 
     private getParams(): RequestParams {
@@ -93,7 +87,39 @@ export class AIPlayerController extends PlayerController {
     }
 
     private query(request: Request): Observable<Response> {
-        return this.httpClient.post(AI_ENDPOINT, request).pipe(map(Response.fromPayload));
+        return this.httpClient.post(AI_ENDPOINT, request).pipe(
+            map(Response.fromPayload),
+            tap(response => {
+                const requestCards = new Map([
+                    [response.discardedCard.id, response.discardedCard],
+                    [response.newCard.id, response.newCard],
+                ]);
+                request.melds.forEach(m => m.cards.forEach(c => requestCards.set(c.id, c)))
+                const responseCards = new Map<string, HttpCard>();
+                response.melds.forEach(m => {
+                    const toRemove: HttpCard[] = []
+                    m.cards.forEach(card => {
+                        if (!requestCards.has(card.id)) {
+                            toRemove.push(card);
+                        } else {
+                            if (!responseCards.has(card.id)) {
+                                responseCards.set(card.id, card);
+                            } else {
+                                toRemove.push(card);
+                            }
+                        }
+                    });
+
+                    toRemove.forEach(card => {
+                        const idx = m.cards.findIndex(c => c == card)
+                        m.cards.splice(idx, 1);
+                    });
+                });
+                responseCards.forEach(c => requestCards.delete(c.id))
+                requestCards.forEach(c => {
+                    response.melds.push(new HttpMeld(null, [c]))
+                });
+            }));
     }
 }
 

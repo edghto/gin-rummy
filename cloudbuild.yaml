@@ -1,0 +1,12 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  script: |
+    docker build -t $LOCATION-docker.pkg.dev/$PROJECT_ID/containers/wemann/gin-rummy-app:${_VERSION} gin-rummy-fe
+  automapSubstitutions: true
+- name: 'gcr.io/cloud-builders/docker'
+  script: |
+    docker build -t $LOCATION-docker.pkg.dev/$PROJECT_ID/containers/wemann/gin-rummy-server:${_VERSION} gin-rummy-server
+  automapSubstitutions: true
+images:
+- $LOCATION-docker.pkg.dev/$PROJECT_ID/containers/wemann/gin-rummy-app:${_VERSION}
+- $LOCATION-docker.pkg.dev/$PROJECT_ID/containers/wemann/gin-rummy-server:${_VERSION}

@@ -48,8 +48,9 @@ export class Dealer implements DiscadedCardsService {
         return this.cardPicked$.asObservable();
     }
 
-    pickFromStock(): void {
+    pickFromStock(): number {
         this.cardPicked$.next(new PickedCard(array_pop(this.stockPile), true));
+        return this.stockPile,length;
     }
 
     pickFromDiscarded(): void {

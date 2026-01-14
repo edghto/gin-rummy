@@ -9,14 +9,15 @@ import { Dealer } from '../services/dealer.service';
   styleUrl: './card-piles.scss',
 })
 export class CardPiles {
+  protected emptyPile = false;
   private dealer = inject(Dealer);
   protected card = this.dealer.lastDiscardedCard;
   @Input() enabled: boolean = true;
   @Input() ended = false;
 
   pickFromStock(): void {
-    if (this.enabled) {
-      this.dealer.pickFromStock();
+    if (this.dealer.pickFromStock() === 0) {
+      this.emptyPile = true;
     }
   }
 

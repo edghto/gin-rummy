@@ -1,11 +1,16 @@
 <div class="meld m-1">
-    <div class="card back-face" [class.highlighted]="enabled" (click)="pickFromStock()"></div>
+    <div class="card {{emptyPile ? 'empty' : 'back-face'}}" [class.highlighted]="enabled && !emptyPile"
+        (click)="pickFromStock()">
+        @if(emptyPile){
+        X
+        }
+    </div>
 </div>
 <div class="meld m-1">
     @if(ended){
-    <div id="end-card" class="card  back-face"></div>
+    <div id="end-card" class="card back-face"></div>
     }
-    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled"
+    <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled && !emptyPile"
         (click)="pickFromDiscarded()">
         {{card()?.face ?? 'X'}}{{card()?.suite}}
     </div>

@@ -1,7 +1,23 @@
 <div class="gin-player-hand" cdkDropListGroup>
+    @if(hidden){
+    <div class="meld m-1">
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+        <div class="card back-face"></div>
+    </div>
+    } @else {
     @for (meld of player.melds(); track meld.id) {
-    <div class="meld m-1" [class.highlighted]="meld.highlighted && dragging" [class.declared]="!meld.isDeadwood() && !meld.isEmpty()"
-        cdkDropList [cdkDropListEnterPredicate]="allowDrop(meld)" [cdkDropListData]="meld.cards()"
+    <div class="meld m-1" [class.highlighted]="meld.highlighted && dragging"
+        [class.declared]="!meld.isDeadwood() && !meld.isEmpty()" cdkDropList
+        [cdkDropListEnterPredicate]="allowDrop(meld)" [cdkDropListData]="meld.cards()"
         (cdkDropListDropped)="drop($event)">
         @if(meld.cards().length === 0 && dragging){
         <div class="card empty">X</div>
@@ -12,5 +28,6 @@
             (dblclick)="discard(card)">{{card.id}}</div>
         }
     </div>
+    }
     }
 </div>

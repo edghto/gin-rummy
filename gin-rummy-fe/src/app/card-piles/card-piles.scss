@@ -11,16 +11,8 @@
     position: relative;
 }
 
-#stock-pile {
-    background-image: url('../../../public/ai-generate-card.png');
-    background-size: 107%;
-    background-position: center;
-}
 
 #end-card {
-    background-image: url('../../../public/ai-generate-card.png');
-    background-size: 107%;
-    background-position: center;
     position: absolute;
     z-index: 10;
     rotate: 90deg;

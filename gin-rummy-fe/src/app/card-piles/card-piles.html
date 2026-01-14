@@ -1,9 +1,9 @@
 <div class="meld m-1">
-    <div id="stock-pile" class="card" [class.highlighted]="enabled" (click)="pickFromStock()"></div>
+    <div class="card back-face" [class.highlighted]="enabled" (click)="pickFromStock()"></div>
 </div>
 <div class="meld m-1">
     @if(ended){
-    <div id="end-card" class="card"></div>
+    <div id="end-card" class="card  back-face"></div>
     }
     <div id="discarded-pile" class="card {{card()?.color ?? 'empty'}}" [class.highlighted]="enabled"
         (click)="pickFromDiscarded()">

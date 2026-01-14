@@ -54,6 +54,12 @@ a {
     }
 }
 
+.back-face {
+    background-image: url('../public/ai-generate-card.png');
+    background-size: 107%;
+    background-position: center;
+}
+
 .highlighted {
     outline: 1px solid yellow;
 }

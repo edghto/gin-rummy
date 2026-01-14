@@ -11,6 +11,7 @@ import { CdkDrag, CdkDragDrop, CdkDragEnd, CdkDragStart, CdkDropList, CdkDropLis
   standalone: true,
 })
 export class GinPlayer {
+  @Input() hidden!: boolean;
   @Input({ required: true }) player!: PlayerController;
   @Output() dragStarted = new EventEmitter<Card>()
   @Output() dragEnded = new EventEmitter<Card>()

@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {  RouterOutlet } from '@angular/router';
 import { GinPlayer } from './gin-player/gin-player';
 import { CardPiles } from './card-piles/card-piles';
 import { Phase, RoundController } from './services/round-controller.service';
@@ -8,7 +8,6 @@ import { UserPlayerController } from './services/player-controller/user.service'
 import { AIPlayerController } from './services/player-controller/ai.service';
 import { HttpClient } from '@angular/common/http';
 import { DISCADED_CARDS_SERVICE_TOKEN } from './services/discarded-card.service';
-import { fromString, Suites } from './services/suites';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +22,7 @@ import { fromString, Suites } from './services/suites';
   ]
 })
 export class App implements OnInit, OnDestroy {
+  protected hidden = true;
   protected dealer = inject(Dealer);
   protected roundController = inject(RoundController);
   private httpClient = inject(HttpClient);

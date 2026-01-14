@@ -4,12 +4,13 @@
     <a href="https://en.wikipedia.org/wiki/Gin_rummy" target="_blank">https://en.wikipedia.org/wiki/Gin_rummy</a>
   </div>
   <div class="gin-table">
-    <gin-player [player]="opponent" [hidden]="true" (dragStarted)="roundController.onDragStarted($event)"
+    <gin-player [player]="opponent" [hidden]="hidden" (dragStarted)="roundController.onDragStarted($event)"
       (dragEnded)="roundController.onDragEnded($event)"></gin-player>
     <card-piles [enabled]="pilesEnabled" [ended]="ended"></card-piles>
     <gin-player [player]="player" (dragStarted)="roundController.onDragStarted($event)"
       (dragEnded)="roundController.onDragEnded($event)"></gin-player>
   </div>
+  <a id="show-cards-button" (click)="hidden=!hidden">{{ hidden ? 'show' : 'hide'}}</a>
 </main>
 
 <router-outlet />

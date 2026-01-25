@@ -38,11 +38,11 @@ func handlePlayerTurn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	playerReposne, err := askAI(r.Context(), playerRequest)
+	playerResponse, err := askAI(r.Context(), playerRequest)
 	if err != nil {
 		log.Printf("failed to get response from AI: %s", err.Error())
 		w.WriteHeader(http.StatusBadGateway)
 		return
 	}
-	fmt.Fprintf(w, "%s", toJSON(&playerReposne))
+	fmt.Fprintf(w, "%s", toJSON(&playerResponse))
 }

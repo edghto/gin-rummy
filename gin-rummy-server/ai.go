@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"log"
+	"os"
 	"strings"
 	"text/template"
 
@@ -18,7 +19,12 @@ func askAI(ctx context.Context, playerRequest *PlayerRequest) (*PlayerResponse, 
 
 	response, err := sendRequest(ctx, prompt)
 	if err != nil {
-		return nil, err
+		log.Printf("failed to get response from AI: %s", err.Error())
+		return &PlayerResponse{
+			Melds:         playerRequest.Melds,
+			DiscardedCard: playerRequest.NewCard,
+			NewCard:       playerRequest.NewCard,
+		}, nil
 	}
 	log.Println("ai response: '" + response + "'")
 
@@ -73,9 +79,14 @@ func getPrompt(request *PlayerRequest) (string, error) {
 
 	log.Println("ai request: '" + data.Data + "'")
 
-	// var tmplFile = "prompt.tmpl"
-	var tmplFile = "/usr/etc/gin-rummy-prompt.tmpl"
-	tmpl, err := template.ParseFiles(tmplFile)
+	// Move it to main
+	TmplFile := os.Getenv("TMPL_FILE")
+	if TmplFile == "" {
+		TmplFile = "/usr/etc/gin-rummy-prompt.tmpl"
+		log.Printf("defaulting to tmplate file %s", TmplFile)
+	}
+
+	tmpl, err := template.ParseFiles(TmplFile)
 	if err != nil {
 		return "", err
 	}

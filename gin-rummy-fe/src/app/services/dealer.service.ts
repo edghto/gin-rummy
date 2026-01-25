@@ -50,7 +50,7 @@ export class Dealer implements DiscadedCardsService {
 
     pickFromStock(): number {
         this.cardPicked$.next(new PickedCard(array_pop(this.stockPile), true));
-        return this.stockPile,length;
+        return this.stockPile.length;
     }
 
     pickFromDiscarded(): void {
